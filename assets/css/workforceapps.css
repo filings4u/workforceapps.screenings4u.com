@@ -46,3 +46,34 @@
  .wfa-login-hero{min-height:unset}
 }
 @media(max-width:720px){.wfa-login-hero{background-image:linear-gradient(110deg,rgba(7,28,50,.96),rgba(17,51,79,.9)),url("/images/Confident%20Logistics%20Team%20Portrait.png");background-size:cover;background-position:center}}
+
+/* Official Workforce palette and identity — 2026-11-08 */
+:root{--navy:#01122F;--navy2:#01122F;--blue:#01122F;--orange:#FDC102;--ink:#01122F;--line:#D4D3D4;--wfa-navy:#01122F;--wfa-gold:#FDC102}
+.wfa-app{color:#01122F;background:#f7f7f8}
+.wfa-header{background:#01122F;color:#fff}
+.wfa-header-inner{max-width:1450px}
+.wfa-brand{display:inline-flex;align-items:center;gap:0}
+.wfa-official-logo{width:177px;max-height:57px;object-fit:contain}
+.wfa-header-links .wfa-secure-label{color:#FDC102}
+.wfa-login-hero{background-color:#01122F;background-image:linear-gradient(93deg,rgba(1,18,47,.99) 0%,rgba(1,18,47,.96) 35%,rgba(1,18,47,.8) 52%,rgba(1,18,47,.24) 74%,rgba(1,18,47,.05) 100%),url("/images/Confident%20Logistics%20Team%20Portrait.png");border-bottom:4px solid #FDC102}
+.wfa-login-hero:before{background:#01122F55}
+.wfa-kicker,.wfa-auth-eyebrow,.wfa-trust-icon,.wfa-login-story .wfa-gold{color:#FDC102}
+.wfa-login-story h1,.wfa-login-story h2{color:#fff}
+.wfa-auth-card{color:#01122F;border-color:#D4D3D4}
+.wfa-auth-card .field input{color:#01122F;border-color:#D4D3D4}
+.wfa-auth-card .field input:focus{border-color:#FDC102;outline-color:#FDC10255}
+.wfa-auth-card .primary,.wfa-auth-card .primary:hover:not(:disabled){background:#FDC102;color:#01122F}
+.wfa-auth-card .primary:disabled{background:#FDC102;color:#01122F}
+.wfa-auth-card .show-password,.wfa-auth-card .under-password a,.wfa-login-help a{color:#01122F}
+.wfa-security{color:#01122F;background:#f1f1f2}
+.wfa-footer{color:#667085}.wfa-footer a{color:#01122F}
+.wfa-selector-hero{background:#01122F;border-bottom:4px solid #FDC102}
+.wfa-selector-hero .eyebrow{color:#FDC102}
+.wfa-selector-body .portal-card:hover,.wfa-card-focused{border-color:#FDC102!important}
+.wfa-selector-body .card-symbol{background:#FDC10222;color:#01122F}
+.wfa-selector-body .enter,.wfa-context-switch button.active,.wfa-context strong{background:#01122F;color:#fff;border-color:#01122F}
+.wfa-selector-body .enter:hover{background:#172b4a;color:#fff}
+.wfa-context-switch{background:#D4D3D4}
+.wfa-context-switch button:not(:disabled):hover{box-shadow:inset 0 0 0 1px #FDC102}
+.wfa-app a:focus-visible,.wfa-app button:focus-visible,.wfa-app input:focus-visible{outline-color:#FDC102}
+@media(max-width:720px){.wfa-official-logo{width:136px}.wfa-login-hero{background-image:linear-gradient(110deg,rgba(1,18,47,.98),rgba(1,18,47,.86)),url("/images/Confident%20Logistics%20Team%20Portrait.png")}}
