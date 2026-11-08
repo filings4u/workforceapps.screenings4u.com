@@ -17,3 +17,5 @@
 .wfa-login-story{position:relative;z-index:1}
 .wfa-auth-card{position:relative;z-index:2}
 @media(max-width:720px){.wfa-brand{gap:10px}.wfa-official-logo{width:127px}.wfa-brand-apps{font-size:13px;padding-left:10px}.wfa-login-hero{background-image:linear-gradient(110deg,#081e38,#173655)}}
+
+.wfa-context{gap:10px;flex-wrap:wrap}.wfa-context-switch{display:flex;gap:3px;background:#e2e7ef;padding:3px;border-radius:7px}.wfa-context-switch button{border:0;border-radius:5px;background:transparent;color:#1b3d63;font-size:10px;font-weight:800;padding:6px 10px}.wfa-context-switch button.active{background:#17395e;color:#fff}.wfa-context-switch button:disabled:not(.active){opacity:.48;cursor:not-allowed}.wfa-context-switch button:not(:disabled):hover{box-shadow:inset 0 0 0 1px #b98d3c}.wfa-card-focused{border-color:#d8aa4c!important;box-shadow:0 0 0 3px #d8aa4c30!important}
