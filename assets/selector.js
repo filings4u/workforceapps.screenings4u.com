@@ -78,6 +78,30 @@ if(!p.setup_only){
  },true);
  }
 }
-card.append(head,meta,a);root.append(card)}}
+// The C/TPA context switch only navigates among cards the backend already authorized.
+let contextPanel=null;
+if(p.portal_code==='ctpa_dot'||p.portal_code==='ctpa_workforce'){
+ const selectedCode=p.portal_code;
+ contextPanel=document.createElement('div');contextPanel.className='wfa-context';contextPanel.setAttribute('aria-label','C/TPA operating context');
+ const label=document.createElement('span');label.textContent='Operating context';contextPanel.append(label);
+ const choices=document.createElement('div');choices.className='wfa-context-switch';
+ for(const [code,labelText] of [['ctpa_dot','DOT'],['ctpa_workforce','NON-DOT']]){
+  const choice=document.createElement('button');choice.type='button';choice.textContent=labelText;
+  const allowed=rows.some(x=>x.portal_code===code&&x.organization_id&&x.organization_id===p.organization_id&&!x.setup_only);
+  choice.disabled=!allowed;choice.className=code===selectedCode?'active':'';
+  choice.setAttribute('aria-pressed',String(code===selectedCode));
+  if(allowed&&code!==selectedCode)choice.addEventListener('click',()=>{
+    const target=[...root.querySelectorAll('.portal-card')].find(el=>el.dataset.portalCode===code&&el.dataset.orgId===p.organization_id);
+    target?.scrollIntoView({behavior:'smooth',block:'center'});target?.classList.add('wfa-card-focused');target?.querySelector('.enter')?.focus({preventScroll:true});
+  });
+  choices.append(choice);
+ }
+ contextPanel.append(choices);
+}
+card.dataset.portalCode=p.portal_code||'';
+card.dataset.orgId=p.organization_id||'';
+card.append(head,meta);
+if(contextPanel)card.append(contextPanel);
+card.append(a);root.append(card)}}
 let loading=false;async function load(force=false){if(loading)return;loading=true;const refreshButton=document.querySelector('#refresh');refreshButton.disabled=true;refreshButton.textContent='↻ Refreshing…';if(!cfg.selectorEndpoint){summary.textContent='Awaiting central subscription service';empty('Access directory not connected','Connect the central subscription authorization endpoint before going live.');return}const cacheKey='s4u_selector_v19_'+session.user.id;if(force){try{sessionStorage.removeItem(cacheKey)}catch{}}let hadCache=false;try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(false&&cached&&Date.now()-cached.time<300000&&Array.isArray(cached.portals)){rows=cached.portals;hadCache=true;summary.textContent=rows.length+' authorized subscriptions';paint();}}catch{}if(!hadCache){summary.textContent='Checking your assigned subscriptions…';empty('Loading workspaces','Verifying your account access.');}try{const {data:{session:latest}}=await sb.auth.getSession();if(!latest)throw Error('Session expired. Please sign in again.');const url=new URL(cfg.selectorEndpoint,location.origin);if(url.protocol!=='https:'&&url.hostname!=='localhost')throw Error('Secure endpoint required.');const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+latest.access_token,'apikey':cfg.supabasePublishableKey},body:JSON.stringify({action:'list_authorized_portals'})});const payload=await res.json();if(!res.ok)throw Error(payload.error||'Unable to verify portal access.');if(!Array.isArray(payload.portals))throw Error('Invalid authorization response.');rows=payload.portals.filter(p=>p&&typeof p==='object'&&typeof p.launch_url==='string'&&/^https:\/\//.test(p.launch_url)&&new URL(p.launch_url).hostname.endsWith('.screenings4u.com'));try{sessionStorage.setItem(cacheKey,JSON.stringify({time:Date.now(),portals:rows}))}catch{}summary.textContent=rows.length+' authorized subscription'+(rows.length===1?'':'s');message.textContent='';paint()}catch(err){rows=[];try{sessionStorage.removeItem(cacheKey)}catch{}summary.textContent='Unable to verify subscriptions';empty('Access temporarily unavailable','No portals will be displayed until authorization is verified.');message.textContent=err.message||'Please retry.';message.className='notice error'}finally{loading=false;refreshButton.disabled=false;refreshButton.textContent='↻ Refresh accounts'}}
 search.addEventListener('input',paint);document.querySelector('#refresh').addEventListener('click',()=>load(true));window.addEventListener('focus',()=>load(true));document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)});sb.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'){rows=[];root.replaceChildren();summary.textContent='Signed out';count.textContent='0 shown';try{sessionStorage.removeItem('s4u_selector_v18_'+session.user.id)}catch{}location.replace('/?reason=session')}});load();})();
