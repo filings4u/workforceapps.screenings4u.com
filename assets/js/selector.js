@@ -9,7 +9,7 @@ async function showAccountName(){
  const welcome=document.querySelector('#selectorWelcome');
  const label=document.querySelector('#selectorName');
  if(!welcome||!label)return;
- const clean=value=>typeof value==='string'?value.trim().replace(/\\s+/g,' ').slice(0,100):'';
+ const clean=value=>typeof value==='string'?value.trim().replace(/\s+/g,' ').slice(0,100):'';
  let display='';
  try{
   const {data,error}=await sb.from('user_profiles').select('first_name,last_name,display_name').eq('id',session.user.id).maybeSingle();
