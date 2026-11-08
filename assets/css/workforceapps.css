@@ -139,3 +139,9 @@
 @media(max-width:1200px){.wfa-workspace-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.wfa-workspace-type{min-height:280px}}
 @media(max-width:760px){.wfa-selector-v2 .wfa-selector-intro{padding-top:18px}.wfa-selector-title-row{display:block}.wfa-selector-title-row h1{font-size:30px}.wfa-selector-actions{margin-top:15px}.wfa-workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wfa-detail-options{grid-template-columns:1fr}.wfa-selector-search-row{justify-content:stretch;align-items:stretch;flex-direction:column;gap:6px}.wfa-selector-search-row .search{max-width:none}}
 @media(max-width:490px){.wfa-workspace-grid{grid-template-columns:1fr}.wfa-workspace-type{min-height:235px}.wfa-option-row{flex-direction:column;align-items:stretch}.wfa-detail-launch.enter{width:100%}}
+
+.wfa-workspace-icon svg{height:27px;width:27px;display:block}
+.wfa-other-workspaces{margin-top:12px;padding:14px 20px}
+.wfa-other-disclosure summary{cursor:pointer;font-size:12px;font-weight:750;color:#01122F;padding:6px 0}
+.wfa-other-disclosure .wfa-detail-options{margin-top:14px}
+@media(max-width:1200px){.wfa-workspace-grid{row-gap:12px}}
