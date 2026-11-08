@@ -1,1 +1,48 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#102d50"><title>Sign in | screenings4u</title><link rel="stylesheet" href="/assets/theme.css"><script defer src="/config.js"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script><script defer src="/assets/login.js"></script><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23325aa3%27/%3E%3Ctext x=%2732%27 y=%2744%27 fill=%27white%27 font-size=%2735%27 text-anchor=%27middle%27 font-family=%27Arial%27%3ES%3C/text%3E%3C/svg%3E"></head><body><main class="login-main"><section class="login-story"><div class="eyebrow">Screenings4u • Connected access</div><h1>One login.<br><em>Every authorized</em><br>workspace.</h1><p>Access your screening, compliance, and workforce services from one secure entry point. Your portals stay independent — your experience stays connected.</p><div class="story-rule"></div><div class="story-features"><div class="story-feature"><span class="feature-icon">✓</span>One central sign-in experience</div><div class="story-feature"><span class="feature-icon">▦</span>Choose from your authorized subscriptions</div><div class="story-feature"><span class="feature-icon">↔</span>Switch between your existing portals</div></div></section><section class="login-right"><div class="auth-card"><div class="eyebrow" style="color:#325aa3">Secure access</div><h2>Welcome back</h2><p class="sub">Sign in with your business credentials to access your screenings4u workspaces.</p><form id="loginForm"><div class="field"><label for="email">Business email address</label><input id="email" name="email" type="email" required autocomplete="email" placeholder="name@company.com"></div><div class="field"><label for="password">Password</label><div class="password-row"><input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Enter your password"><button class="show-password" id="togglePassword" type="button">Show</button></div></div><div class="under-password"><a href="/forgot-password.html">Forgot password?</a></div><div id="turnstileWrap" class="turnstile"><div id="securityChallenge"></div></div><button id="submitButton" class="primary" type="submit" disabled>Sign in to your account <span aria-hidden="true">→</span></button><p id="message" role="status" aria-live="polite" class="notice"></p></form><div class="security">Protected account access. Only the organizations and subscriptions assigned to your identity will appear after sign-in.</div></div></section></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#102b48">
+<title>Sign In | WorkforceApps by screenings4u</title>
+<meta name="description" content="Sign in securely to your assigned WorkforceApps compliance and screening workspaces.">
+<link rel="stylesheet" href="/assets/theme.css"><link rel="stylesheet" href="/assets/workforceapps.css?v=20261108-1">
+<link rel="preconnect" href="https://elpbnytpciqnbexiaebp.supabase.co" crossorigin>
+<script defer src="/config.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+<script defer src="/assets/login.js"></script>
+</head>
+<body class="wfa-app">
+<header class="wfa-header"><div class="wfa-header-inner">
+<a class="wfa-brand" href="/" aria-label="WorkforceApps sign in"><span class="wfa-brand-main">Workforce<span class="wfa-gold">Apps</span></span><span class="wfa-brand-sub">by screenings<span class="wfa-gold">4u</span></span></a>
+<nav class="wfa-header-links" aria-label="Utilities"><a href="https://workforce.screenings4u.com/">Workforce website</a><a href="/forgot-password.html">Account help</a><span class="wfa-secure-label">♢ Secure access</span></nav>
+</div></header>
+<main class="wfa-login-page">
+<section class="wfa-login-hero" aria-labelledby="welcomeHeading">
+<div class="wfa-login-wrap">
+<div class="wfa-login-story"><div class="wfa-kicker">SCREENINGS4U WORKFORCE COMPLIANCE</div>
+<h1 id="welcomeHeading">Workforce<span class="wfa-gold">Apps</span></h1>
+<h2>Secure access to your workforce compliance portals.</h2>
+<p>One account connects your authorized C/TPA, Employer, Owner-Operator, Independent Contractor and DOT agency workspaces.</p>
+<div class="wfa-trust-list"><div><span class="wfa-trust-icon">◇</span> Secure access</div><div><span class="wfa-trust-icon">▤</span> Role-based portals</div><div><span class="wfa-trust-icon">✓</span> Compliance ready</div></div>
+</div>
+<section class="wfa-auth-card" aria-labelledby="loginHeading">
+<div class="wfa-auth-eyebrow">WELCOME BACK</div>
+<h2 id="loginHeading">Sign in to WorkforceApps</h2>
+<p class="wfa-auth-desc">Access your assigned workforce compliance portals.</p>
+<form id="loginForm">
+<div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" required autocomplete="email" placeholder="Enter your email address" inputmode="email"></div>
+<div class="field"><label for="password">Password</label><div class="password-row"><input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Enter your password"><button class="show-password" id="togglePassword" type="button" aria-label="Show password">Show</button></div></div>
+<div class="under-password"><a href="/forgot-password.html">Forgot password?</a></div>
+<div id="turnstileWrap" class="turnstile"><div id="securityChallenge" aria-label="Security verification"></div></div>
+<button id="submitButton" class="primary" type="submit" disabled>Sign In <span aria-hidden="true">→</span></button>
+<p id="message" role="status" aria-live="polite" class="notice"></p>
+</form>
+<div class="wfa-login-help"><span>Purchased a plan? Use your invited email.</span><a href="/forgot-password.html">Need help signing in?</a></div>
+<div class="wfa-security"><span aria-hidden="true">♧</span><div><strong>Secure &amp; verified</strong><small>Your organization and subscription access are verified after sign in.</small></div></div>
+</section>
+</div></section>
+<section class="wfa-info-band"><div class="wfa-info-inner"><div><strong>Your workspaces, in one place.</strong><p>After you sign in, choose from the portals assigned to your organization and subscription.</p></div><div class="wfa-info-steps"><span>1. Sign in</span><span>2. Select portal</span><span>3. Open workspace</span></div></div></section>
+</main>
+<footer class="wfa-footer"><div>© screenings4u · WorkforceApps</div><div><a href="https://workforce.screenings4u.com/">Workforce Compliance</a><span>Secure customer access</span></div></footer>
+</body></html>
