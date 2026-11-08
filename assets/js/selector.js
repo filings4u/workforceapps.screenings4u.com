@@ -29,6 +29,7 @@ if(!p.setup_only){
  const destinations={
  'lab-account.screenings4u.com':'lab_account',
  'ctpa-dot.screenings4u.com':'ctpa_dot',
+ 'ctpa.screenings4u.com':'ctpa_dot',
  'ctpa-employer-dot.screenings4u.com':'ctpa_employer_dot',
  'ctpa-employee-dot.screenings4u.com':'ctpa_employee_dot',
  'ctpa-driver-dot.screenings4u.com':'ctpa_driver_dot',
@@ -92,7 +93,11 @@ if(!p.setup_only){
  const result=await response.json().catch(()=>({}));
  if(!response.ok||!result.redirect_url)throw Error(result.error||'Unable to open this portal.');
  const target=new URL(result.redirect_url);
- if(target.protocol!=='https:'||target.hostname!==dest.hostname||target.pathname!=='/auth-handoff.html')throw Error('Portal destination does not match the authorized workspace.');
+ // The legacy C/TPA subscription catalog may still reference ctpa-dot;
+ // its verified handoff target is now the canonical ctpa.screenings4u.com.
+ const canonicalHost=portal==='ctpa_dot'?'ctpa.screenings4u.com':dest.hostname;
+ if(target.protocol!=='https:'||target.hostname!==canonicalHost||target.pathname!=='/auth-handoff.html')
+   throw Error('Portal destination does not match the authorized workspace.');
  location.assign(target.href);
  }catch(error){message.textContent=error.message||'Unable to open portal.';message.className='notice error';a.dataset.busy='0';a.textContent='Open portal →'}
  },true);
