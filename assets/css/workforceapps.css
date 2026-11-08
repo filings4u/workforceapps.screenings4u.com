@@ -77,3 +77,65 @@
 .wfa-context-switch button:not(:disabled):hover{box-shadow:inset 0 0 0 1px #FDC102}
 .wfa-app a:focus-visible,.wfa-app button:focus-visible,.wfa-app input:focus-visible{outline-color:#FDC102}
 @media(max-width:720px){.wfa-official-logo{width:136px}.wfa-login-hero{background-image:linear-gradient(110deg,rgba(1,18,47,.98),rgba(1,18,47,.86)),url("/images/Confident%20Logistics%20Team%20Portrait.png")}}
+
+/* Workforce portal selector — five role-based cards matching approved mockup */
+.wfa-selector-v2{min-height:calc(100dvh - 132px);background:#f8f9fb;padding:0 0 35px}
+.wfa-selector-v2 .wfa-selector-intro{display:flex;align-items:center;justify-content:space-between;padding-top:25px;padding-bottom:10px}
+.wfa-user-line{display:flex;align-items:center;gap:12px}
+.wfa-avatar{display:grid;place-items:center;width:42px;height:42px;background:#e7edf5;color:#183456;border-radius:50%;font-size:21px}
+.wfa-user-line strong{display:block;font-size:14px;color:#01122F}
+.wfa-user-line small{display:block;color:#6e7890;font-size:12px;margin-top:3px}
+.wfa-auth-status{font-size:12px;font-weight:750;padding:9px 13px;border-radius:9px;background:#e4f5e9;color:#146138}
+.wfa-selector-v2 .wfa-selector-content{padding-top:8px}
+.wfa-selector-title-row{display:flex;align-items:flex-end;justify-content:space-between;gap:22px}
+.wfa-selector-title-row h1{font-size:clamp(29px,3vw,40px);line-height:1.1;letter-spacing:-1.2px;margin:0 0 7px;color:#01122F}
+.wfa-selector-title-row p{font-size:14px;color:#607187;margin:0;line-height:1.55}
+.wfa-selector-actions{display:flex;gap:9px;flex-wrap:wrap;flex-shrink:0}
+.wfa-utility-link{display:inline-flex;align-items:center;justify-content:center;min-height:36px;border:1px solid #D4D3D4;border-radius:9px;background:#fff;padding:8px 13px;font-size:11px;font-weight:750;color:#01122F;text-decoration:none}
+.wfa-utility-link:hover{border-color:#FDC102}
+.wfa-portal-summary{display:flex;justify-content:space-between;align-items:center;gap:15px;color:#65778d;font-size:11px;margin-top:16px}
+.wfa-selector-search-row{display:flex;gap:15px;align-items:center;justify-content:flex-end;margin:8px 0 18px}
+.wfa-selector-search-row label{font-size:11px;color:#607187;margin:0}
+.wfa-selector-search-row .search{max-width:360px;width:100%;background:white;border-color:#D4D3D4;font-size:12px;padding:10px 13px}
+.wfa-workspace-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}
+.wfa-workspace-type{min-width:0;min-height:302px;border:1px solid #D4D3D4;border-radius:13px;padding:16px 15px 14px;display:flex;flex-direction:column;background:white;box-shadow:0 4px 15px #01122F06;transition:border-color .16s,box-shadow .16s}
+.wfa-workspace-type.is-selected{border:2px solid #FDC102;padding:15px 14px 13px;background:linear-gradient(160deg,#fff9e4 0%,#fff 66%);box-shadow:0 0 0 2px #FDC10216}
+.wfa-workspace-type.is-locked{background:#fbfbfc}
+.wfa-workspace-head{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:13px}
+.wfa-workspace-icon{width:45px;height:45px;display:grid;place-items:center;border-radius:11px;background:#fff2c6;color:#01122F;font-size:24px}
+.wfa-workspace-type:nth-child(2) .wfa-workspace-icon,.wfa-workspace-type:nth-child(3) .wfa-workspace-icon{background:#e9edf4}
+.wfa-workspace-type:nth-child(4) .wfa-workspace-icon{background:#fff2db}
+.wfa-workspace-type:nth-child(5) .wfa-workspace-icon{background:#eceef2}
+.wfa-workspace-state{font-size:10px;font-weight:750;white-space:nowrap;line-height:1.25;border-radius:30px;padding:5px 7px}
+.wfa-workspace-state.allowed{background:#e5f6e9;color:#23653e}
+.wfa-workspace-state.pending{background:#fff2cf;color:#865700}
+.wfa-workspace-state.locked{background:#ebedf0;color:#687487}
+.wfa-workspace-type h2{font-size:17px;letter-spacing:-.55px;line-height:1.15;margin:0 0 6px;color:#01122F;overflow-wrap:break-word}
+.wfa-workspace-desc{font-size:11px;line-height:1.48;color:#52657b;margin:0;min-height:49px}
+.wfa-workspace-spacer{flex:1;min-height:39px}
+.wfa-workspace-ctx{margin-top:12px;margin-bottom:7px;padding:9px 8px;background:#f7f8fa;border:1px solid #e8e9eb;border-radius:9px}
+.wfa-context-caption{font-size:10px;font-weight:750;color:#36485c;margin-bottom:7px}
+.wfa-workspace-tabs{display:flex;background:#e6e9ee;border-radius:6px;padding:2px;gap:2px}
+.wfa-workspace-tabs button{font-size:10px;font-weight:750;border:0;background:transparent;color:#01122F;border-radius:5px;padding:6px 7px;flex:1}
+.wfa-workspace-tabs button.active{background:#01122F;color:#fff}
+.wfa-workspace-tabs button:disabled:not(.active){opacity:.38;cursor:not-allowed}
+.wfa-workspace-note{font-size:10px;color:#68788b;margin:auto 0 11px;padding-top:12px;min-height:32px}
+.wfa-workspace-open{margin-top:auto;background:#01122F;color:#fff;border:1px solid #01122F;border-radius:8px;min-height:39px;padding:8px;font-size:10.5px;font-weight:800;width:100%;line-height:1.2}
+.wfa-workspace-type.is-selected .wfa-workspace-open{background:#FDC102;color:#01122F;border-color:#FDC102}
+.wfa-workspace-open:disabled{background:#e8eaee;border-color:#e8eaee;color:#788396;cursor:not-allowed}
+.wfa-workspace-open:not(:disabled):hover{filter:brightness(1.08)}
+.wfa-workspace-detail{margin-top:22px;border:1px solid #e0e3e9;border-radius:14px;background:#fff;padding:20px 21px;scroll-margin-top:15px}
+.wfa-detail-header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:14px}
+.wfa-detail-header h3{font-size:17px;color:#01122F;margin:0 0 5px}
+.wfa-detail-header p{font-size:11px;color:#66768a;margin:0}
+.wfa-detail-count{font-size:10px;border-radius:25px;background:#fff1c7;color:#01122F;padding:7px 10px;font-weight:750;white-space:nowrap}
+.wfa-detail-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.wfa-option-row{min-width:0;display:flex;justify-content:space-between;align-items:center;gap:14px;border:1px solid #e1e5eb;background:#fcfcfd;border-radius:10px;padding:11px 12px}
+.wfa-option-info{min-width:0}.wfa-option-info strong{font-size:12px;color:#01122F;display:block}.wfa-option-info small{display:block;font-size:10px;line-height:1.55;color:#65778b;margin-top:4px;overflow-wrap:anywhere}
+.wfa-detail-launch.enter{white-space:nowrap;flex-shrink:0;width:auto;min-width:112px;margin:0;display:inline-flex;align-items:center;justify-content:center;background:#01122F;border-color:#01122F;color:#fff;border-radius:7px;padding:10px;font-size:10px;min-height:35px}
+.wfa-detail-launch.enter:hover{background:#1a3455}
+.wfa-detail-empty{padding:19px;background:#f8f9fb;border-radius:9px;color:#617187;font-size:12px}
+.wfa-selector-v2 #selectorMessage:empty{display:none}
+@media(max-width:1200px){.wfa-workspace-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.wfa-workspace-type{min-height:280px}}
+@media(max-width:760px){.wfa-selector-v2 .wfa-selector-intro{padding-top:18px}.wfa-selector-title-row{display:block}.wfa-selector-title-row h1{font-size:30px}.wfa-selector-actions{margin-top:15px}.wfa-workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wfa-detail-options{grid-template-columns:1fr}.wfa-selector-search-row{justify-content:stretch;align-items:stretch;flex-direction:column;gap:6px}.wfa-selector-search-row .search{max-width:none}}
+@media(max-width:490px){.wfa-workspace-grid{grid-template-columns:1fr}.wfa-workspace-type{min-height:235px}.wfa-option-row{flex-direction:column;align-items:stretch}.wfa-detail-launch.enter{width:100%}}
