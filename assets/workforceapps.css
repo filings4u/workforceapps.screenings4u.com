@@ -7,3 +7,13 @@
 .wfa-app a:focus-visible,.wfa-app button:focus-visible,.wfa-app input:focus-visible{outline:3px solid #e9bc66;outline-offset:2px}
 @media(max-width:960px){.wfa-login-wrap{gap:24px;grid-template-columns:minmax(0,1fr) minmax(320px,440px)}.wfa-selector-body .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.wfa-header-inner{padding:12px 19px}.wfa-brand-main{font-size:21px}.wfa-header-links a:first-child,.wfa-secure-label{display:none}.wfa-login-wrap{display:flex;flex-direction:column;align-items:stretch;padding:34px 19px 42px}.wfa-login-story h1{font-size:44px}.wfa-login-story h2{font-size:24px}.wfa-trust-list{margin-top:22px;gap:15px}.wfa-auth-card{padding:24px 20px}.wfa-info-inner{display:block;padding:24px 19px}.wfa-info-steps{margin-top:17px}.wfa-footer{display:block;padding:20px}.wfa-footer>div:last-child{margin-top:9px}.wfa-selector-hero>.wrap{display:block;padding:30px 19px}.wfa-selector-hero .selector-control{margin-top:19px}.wfa-selector-body{padding:20px 19px}.wfa-selector-body .toolbar{display:block}.wfa-selector-body .search{margin-top:16px;width:100%}.wfa-selector-body .grid{grid-template-columns:1fr}}
+
+/* Official logo, desktop photographic accent, and navigation refinements */
+.wfa-brand{flex-direction:row;align-items:center;gap:17px}
+.wfa-official-logo{display:block;width:168px;height:auto;max-height:54px;object-fit:contain}
+.wfa-brand-apps{font-size:17px;line-height:1.2;color:#fff;font-weight:800;letter-spacing:-.3px;padding-left:17px;border-left:1px solid #ffffff58}
+.wfa-login-hero{background-image:linear-gradient(106deg,#081e38 0%,#102c4c 42%,#0b2848ed 62%,#123356a8 80%,#1a3c5d8a 100%),url("https://workforce.screenings4u.com/images/Confident%20Trucker%20Beside%20Navy%20Semi-Truck.png");background-repeat:no-repeat;background-position:center,right center;background-size:cover,auto 100%}
+.wfa-login-hero:before{pointer-events:none}
+.wfa-login-story{position:relative;z-index:1}
+.wfa-auth-card{position:relative;z-index:2}
+@media(max-width:720px){.wfa-brand{gap:10px}.wfa-official-logo{width:127px}.wfa-brand-apps{font-size:13px;padding-left:10px}.wfa-login-hero{background-image:linear-gradient(110deg,#081e38,#173655)}}
