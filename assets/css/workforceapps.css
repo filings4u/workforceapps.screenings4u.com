@@ -12,10 +12,37 @@
 .wfa-brand{flex-direction:row;align-items:center;gap:17px}
 .wfa-official-logo{display:block;width:168px;height:auto;max-height:54px;object-fit:contain}
 .wfa-brand-apps{font-size:17px;line-height:1.2;color:#fff;font-weight:800;letter-spacing:-.3px;padding-left:17px;border-left:1px solid #ffffff58}
-.wfa-login-hero{background-image:linear-gradient(106deg,#081e38 0%,#102c4c 42%,#0b2848ed 62%,#123356a8 80%,#1a3c5d8a 100%),url("https://workforce.screenings4u.com/images/Confident%20Trucker%20Beside%20Navy%20Semi-Truck.png");background-repeat:no-repeat;background-position:center,right center;background-size:cover,auto 100%}
+.wfa-login-hero{background-image:linear-gradient(93deg,rgba(7,25,46,.98) 0%,rgba(8,28,51,.97) 36%,rgba(10,33,57,.82) 51%,rgba(12,37,65,.22) 72%,rgba(11,35,63,.05) 100%),url("/images/Confident%20Logistics%20Team%20Portrait.png");background-repeat:no-repeat;background-position:center,right center;background-size:cover,cover}
 .wfa-login-hero:before{pointer-events:none}
 .wfa-login-story{position:relative;z-index:1}
 .wfa-auth-card{position:relative;z-index:2}
 @media(max-width:720px){.wfa-brand{gap:10px}.wfa-official-logo{width:127px}.wfa-brand-apps{font-size:13px;padding-left:10px}.wfa-login-hero{background-image:linear-gradient(110deg,#081e38,#173655)}}
 
 .wfa-context{gap:10px;flex-wrap:wrap}.wfa-context-switch{display:flex;gap:3px;background:#e2e7ef;padding:3px;border-radius:7px}.wfa-context-switch button{border:0;border-radius:5px;background:transparent;color:#1b3d63;font-size:10px;font-weight:800;padding:6px 10px}.wfa-context-switch button.active{background:#17395e;color:#fff}.wfa-context-switch button:disabled:not(.active){opacity:.48;cursor:not-allowed}.wfa-context-switch button:not(:disabled):hover{box-shadow:inset 0 0 0 1px #b98d3c}.wfa-card-focused{border-color:#d8aa4c!important;box-shadow:0 0 0 3px #d8aa4c30!important}
+
+/* 2026-11-08: single-viewport desktop login, retaining mobile natural scroll. */
+@media(min-width:921px) and (min-height:640px){
+ html:has(.wfa-login-page),body.wfa-app:has(.wfa-login-page){height:100%;overflow:hidden}
+ body.wfa-app:has(.wfa-login-page){display:flex;flex-direction:column;min-height:100dvh}
+ .wfa-header{flex:0 0 auto}
+ .wfa-login-page{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+ .wfa-login-hero{flex:1 1 auto;display:flex;align-items:stretch;min-height:0}
+ .wfa-login-wrap{width:100%;min-height:0;padding-top:clamp(16px,3vh,36px);padding-bottom:clamp(16px,3vh,36px)}
+ .wfa-footer{flex:0 0 auto;width:100%;padding-top:12px;padding-bottom:12px}
+ .wfa-info-band{display:none}
+}
+.wfa-login-hero{background-color:#0c2948}
+.wfa-login-hero:before{inset:-20% 67% -20% -20%;background:#07182a66}
+.wfa-login-story{background:transparent}
+.wfa-login-story h1{font-weight:850}
+.wfa-login-story h2{max-width:490px}
+.wfa-login-story p{max-width:490px}
+.wfa-auth-card{background:rgba(255,255,255,.98)}
+.wfa-header-inner{max-width:1450px}
+.wfa-official-logo{width:177px;max-height:57px}
+.wfa-brand-apps{white-space:nowrap}
+@media(max-width:920px), (max-height:639px){
+ html:has(.wfa-login-page),body.wfa-app:has(.wfa-login-page){height:auto;overflow:auto}
+ .wfa-login-hero{min-height:unset}
+}
+@media(max-width:720px){.wfa-login-hero{background-image:linear-gradient(110deg,rgba(7,28,50,.96),rgba(17,51,79,.9)),url("/images/Confident%20Logistics%20Team%20Portrait.png");background-size:cover;background-position:center}}
