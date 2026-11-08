@@ -87,7 +87,7 @@ if(p.portal_code==='ctpa_dot'||p.portal_code==='ctpa_workforce'){
  const choices=document.createElement('div');choices.className='wfa-context-switch';
  for(const [code,labelText] of [['ctpa_dot','DOT'],['ctpa_workforce','NON-DOT']]){
   const choice=document.createElement('button');choice.type='button';choice.textContent=labelText;
-  const allowed=rows.some(x=>x.portal_code===code&&x.organization_id&&x.organization_id===p.organization_id&&!x.setup_only);
+  const allowed=code===selectedCode||(!!p.organization_id&&rows.some(x=>x.portal_code===code&&x.organization_id===p.organization_id&&!x.setup_only));
   choice.disabled=!allowed;choice.className=code===selectedCode?'active':'';
   choice.setAttribute('aria-pressed',String(code===selectedCode));
   if(allowed&&code!==selectedCode)choice.addEventListener('click',()=>{
