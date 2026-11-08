@@ -122,8 +122,9 @@ function categoryFor(p){
  if(/ctpa|c\/tpa|consortium|third.party/.test(all))return 'ctpa';
  if(/owner.operator|owner_operator/.test(all))return 'owner';
  if(/independent.contractor|independent_contractor/.test(all))return 'independent';
+ if(/(?:^|[.-])(faa|fmcsa|fra|fta|phmsa|uscg)(?:[.-])/.test(host)||/\\b(faa|fmcsa|fra|fta|phmsa|uscg)\\b/.test(title))return 'agency';
  if(/employer|employee|driver|non.dot|workforce/.test(all))return 'employer';
- if(/faa|fmcsa|fra|fta|phmsa|uscg|dot/.test(all))return 'agency';
+ if(/dot/.test(all))return 'agency';
  return 'other';
 }
 function contextFor(p){
@@ -175,7 +176,7 @@ function paint(){
    }
    if(!usable.ctpa.some(x=>contextFor(x.data)===selectedContext)){
     selectedContext=usable.ctpa.some(x=>contextFor(x.data)==='dot')?'dot':'nondot';
-    for(const btn of tabs.children)btn.classList.toggle('active',btn.textContent.toLowerCase().replace('-','')===selectedContext);
+    for(const btn of tabs.children){const isSelected=btn.textContent.toLowerCase().replace('-','')===selectedContext;btn.classList.toggle('active',isSelected);btn.setAttribute('aria-pressed',String(isSelected));}
    }
    ctx.append(tabs);card.append(ctx);
   }else{card.append(dom('div','wfa-workspace-spacer',''));}
