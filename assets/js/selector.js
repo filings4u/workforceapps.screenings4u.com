@@ -123,7 +123,8 @@ function categoryFor(p){
  if(/owner.operator|owner_operator/.test(all))return 'owner';
  if(/independent.contractor|independent_contractor/.test(all))return 'independent';
  if(/employer|employee|driver|non.dot|workforce/.test(all))return 'employer';
- return 'agency';
+ if(/faa|fmcsa|fra|fta|phmsa|uscg|dot/.test(all))return 'agency';
+ return 'other';
 }
 function contextFor(p){
  const all=[p.title,p.portal_type,p.portal_code,new URL(p.launch_url).hostname].join(' ').toLowerCase();
@@ -148,7 +149,14 @@ function paint(){
   const pending=totals[def.id].length>0&&!allowed;
   const card=dom('article','wfa-workspace-type'+(selectedCategory===def.id?' is-selected':'')+(!allowed?' is-locked':''));
   const head=dom('div','wfa-workspace-head');
-  const icon=dom('span','wfa-workspace-icon',def.icon);icon.setAttribute('aria-hidden','true');
+  const icon=dom('span','wfa-workspace-icon');icon.setAttribute('aria-hidden','true');
+ const svgs={
+ ctpa:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></svg>',
+ employer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 6a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 5"/></svg>',
+ owner:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 6h12v12H2zM14 10h4l4 4v4h-8z"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>',
+ independent:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 14a8 8 0 0 1 16 0H4Zm-1 0h18M8 14v-3m8 3v-3M7 17h10"/></svg>',
+ agency:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m2 9 10-6 10 6H2Zm2 12h16M3 18h18M6 10v8m4-8v8m4-8v8m4-8v8"/></svg>'
+ };icon.innerHTML=svgs[def.id];
   const state=dom('span','wfa-workspace-state'+(allowed?' allowed':pending?' pending':' locked'),allowed?'✓ Active':pending?'◷ Requires assignment':'♙ Not assigned');
   head.append(icon,state);
   const h=dom('h2','',def.label);
@@ -209,6 +217,21 @@ function paint(){
   detail.append(note);
  }
  outer.append(detail);
+ const other=items.filter(x=>x.category==='other'&&!x.data.setup_only);
+ if(other.length){
+  const box=dom('section','wfa-workspace-detail wfa-other-workspaces');
+  const disclosure=dom('details','wfa-other-disclosure');
+  const trigger=dom('summary','',other.length+' additional authorized service'+(other.length===1?'':'s'));
+  const list=dom('div','wfa-detail-options');
+  for(const item of other){
+   const p=item.data,action=item.node.querySelector('.enter');
+   if(!action)continue;
+   const row=dom('div','wfa-option-row'),left=dom('div','wfa-option-info');
+   left.append(dom('strong','',p.title||'Assigned service'),dom('small','',(p.plan||p.organization||'Authorized account')+' · '+new URL(p.launch_url).hostname));
+   action.classList.add('wfa-detail-launch');row.append(left,action);list.append(row);
+  }
+  disclosure.append(trigger,list);box.append(disclosure);outer.append(box);
+ }
  root.replaceChildren(outer);
  count.textContent=CATEGORIES.filter(x=>usable[x.id].length).length+' available portal types';
  const summaryText=rows.length+' assigned subscription'+(rows.length===1?'':'s')+' · '+CATEGORIES.filter(x=>usable[x.id].length).length+' portal types available';
