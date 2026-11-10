@@ -164,7 +164,10 @@ function paint(){
  const subset=rows.filter(r=>!r.setup_only&&[r.title,r.organization,r.plan,r.portal_type,new URL(r.launch_url).hostname].some(v=>String(v||'').toLowerCase().includes(q)));
  paintLegacy(); // builds a secure clickable card for every server-authorized row
  const renderedCards=Array.from(root.querySelectorAll(':scope > .portal-card'));
- const items=subset.map((p,i)=>({data:p,node:renderedCards[i],category:categoryFor(p)})).filter(x=>x.node);
+ // Match the legacy authorized launch anchors by row identity, not filtered array index.
+ const legacySubset=rows.filter(r=>[r.title,r.organization,r.plan,r.portal_type].some(v=>String(v||'').toLowerCase().includes(q)));
+ const authorizedLinks=new Map(legacySubset.map((p,i)=>[p,renderedCards[i]]));
+ const items=subset.map(p=>({data:p,node:authorizedLinks.get(p),category:categoryFor(p)})).filter(x=>x.node);
  const totals=Object.fromEntries(CATEGORIES.map(x=>[x.id,items.filter(v=>v.category===x.id)]));
  const usable=Object.fromEntries(CATEGORIES.map(x=>[x.id,totals[x.id].filter(v=>!v.data.setup_only)]));
  if(!usable[selectedCategory]?.length){
@@ -174,7 +177,6 @@ function paint(){
  const grid=dom('section','wfa-workspace-grid');grid.setAttribute('aria-label','Choose your portal type');
  for(const def of CATEGORIES){
   const allowed=usable[def.id].length>0;
-  if(!allowed)continue;
   const pending=false;
   const card=dom('article','wfa-workspace-type'+(selectedCategory===def.id?' is-selected':'')+(!allowed?' is-locked':''));
   const head=dom('div','wfa-workspace-head');
@@ -194,6 +196,7 @@ function paint(){
   card.append(head,h,desc);
   if(def.id==='ctpa'){
    const ctx=dom('div','wfa-workspace-ctx');
+   if(!allowed)ctx.hidden=true;
    ctx.append(dom('div','wfa-context-caption','Access context'));
    const tabs=dom('div','wfa-workspace-tabs');
    for(const [key,label] of [['dot','DOT'],['nondot','NON-DOT']]){
@@ -213,7 +216,13 @@ function paint(){
   card.append(note);
   const btn=dom('button','wfa-workspace-open',allowed?def.action+' →':pending?'Awaiting assignment':'Locked');
   btn.type='button';btn.disabled=!allowed;btn.setAttribute('aria-expanded',String(selectedCategory===def.id&&allowed));
-  btn.addEventListener('click',()=>{selectedCategory=def.id;paint();document.querySelector('#wfa-available-options')?.scrollIntoView({block:'nearest',behavior:'smooth'})});
+  btn.addEventListener('click',()=>{
+   if(!allowed)return;
+   const choices=usable[def.id].filter(x=>def.id!=='ctpa'||contextFor(x.data)===selectedContext);
+   if(choices.length===1){choices[0].node.querySelector('.enter')?.click();return}
+   selectedCategory=def.id;paint();
+   document.querySelector('#wfa-available-options')?.scrollIntoView({block:'nearest',behavior:'smooth'});
+  });
   card.append(btn);grid.append(card);
  }
  outer.append(grid);
@@ -246,7 +255,7 @@ function paint(){
   const note=dom('div','wfa-detail-empty',pending.length?'This access is awaiting verified assignment.':'Select another available portal above, or contact support about your access.');
   detail.append(note);
  }
- outer.append(detail);
+ if(eligible.length>1)outer.append(detail);
  // Each additional authorized service appears as a normal card in the same grid.
  const others=items.filter(x=>x.category==='other'&&!x.data.setup_only);
  for(const item of others){
