@@ -247,24 +247,29 @@ function paint(){
   detail.append(note);
  }
  outer.append(detail);
- const other=items.filter(x=>x.category==='other'&&!x.data.setup_only);
- if(other.length){
-  const box=dom('section','wfa-workspace-detail wfa-other-workspaces');
-  const disclosure=dom('div','wfa-other-disclosure');
-  const trigger=dom('h3','', 'Other authorized services');
-  const list=dom('div','wfa-detail-options');
-  for(const item of other){
-   const p=item.data,action=item.node.querySelector('.enter');
-   if(!action)continue;
-   const row=dom('div','wfa-option-row'),left=dom('div','wfa-option-info');
-   left.append(dom('strong','',p.title||'Assigned service'),dom('small','',(p.plan||p.organization||'Authorized account')+' · '+new URL(p.launch_url).hostname));
-   action.classList.add('wfa-detail-launch');row.append(left,action);list.append(row);
-  }
-  disclosure.append(trigger,list);box.append(disclosure);outer.append(box);
+ // Each additional authorized service appears as a normal card in the same grid.
+ const others=items.filter(x=>x.category==='other'&&!x.data.setup_only);
+ for(const item of others){
+  const p=item.data,action=item.node.querySelector('.enter');
+  if(!action)continue;
+  const card=dom('article','wfa-workspace-type wfa-extra-service');
+  const head=dom('div','wfa-workspace-head');
+  const icon=dom('span','wfa-workspace-icon');
+  icon.setAttribute('aria-hidden','true');
+  icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
+  head.append(icon,dom('span','wfa-workspace-state allowed','✓ Active'));
+  const host=new URL(p.launch_url).hostname;
+  card.append(head,dom('h2','',p.title||'Authorized Service'),dom('p','wfa-workspace-desc',p.organization||p.plan||'Your authorized Workforce service'));
+  card.append(dom('div','wfa-workspace-spacer',''));
+  card.append(dom('div','wfa-workspace-note',host));
+  action.classList.add('wfa-workspace-open','wfa-extra-launch');
+  action.textContent='Open Portal →';
+  card.append(action);
+  grid.append(card);
  }
  root.replaceChildren(outer);
- count.textContent=CATEGORIES.filter(x=>usable[x.id].length).length+' available portal types';
- const summaryText=rows.length+' assigned subscription'+(rows.length===1?'':'s')+' · '+CATEGORIES.filter(x=>usable[x.id].length).length+' portal types available';
+ count.textContent=(CATEGORIES.filter(x=>usable[x.id].length).length+others.length)+' available portals';
+ const summaryText=rows.length+' assigned subscription'+(rows.length===1?'':'s')+' · '+(CATEGORIES.filter(x=>usable[x.id].length).length+others.length)+' portals available';
  summary.textContent=summaryText;
  // Customer name is resolved once by showAccountName(), never from their email address.
 }
