@@ -132,18 +132,20 @@ card.append(a);root.append(card)}}
 /* Five-role visual selector. The existing paintLegacy builds the authorized launch
  * links and secure handoff handlers; cards are reorganized, never reauthorized in UI. */
 const CATEGORIES=[
+ {id:'lab',label:'Lab Account',icon:'▣',desc:'Manage your laboratory orders, results, supplies and invoices.',action:'Open Lab Account'},
  {id:'ctpa',label:'C/TPA',icon:'▤',desc:'Manage your third-party compliance and consortium programs.',action:'Open C/TPA Portal'},
  {id:'employer',label:'Employer',icon:'♧',desc:'Manage employees, testing, and workforce compliance.',action:'Open Employer Portal'},
  {id:'owner',label:'Owner-Operator',icon:'▱',desc:'Manage owner-operator compliance and screening.',action:'Open Owner-Operator Portal'},
  {id:'independent',label:'Independent Contractor',icon:'♙',desc:'Access contractor assignments and credentials.',action:'Open Contractor Portal'},
  {id:'agency',label:'DOT Agency',icon:'▥',desc:'Access FAA, FMCSA, FRA, FTA, PHMSA and USCG workspaces.',action:'Open DOT Agency Portal'}
 ];
-let selectedCategory='ctpa',selectedContext='dot';
+let selectedCategory='lab',selectedContext='dot';
 function categoryFor(p){
  const host=new URL(p.launch_url).hostname.toLowerCase();
  const title=String(p.title||'').toLowerCase();
  const type=String(p.portal_type||'').toLowerCase();
  const all=[host,title,type,String(p.portal_code||'')].join(' ');
+ if(host==='lab-account.screenings4u.com'||String(p.portal_code||'')==='lab_account')return 'lab';
  if(/ctpa|c\/tpa|consortium|third.party/.test(all))return 'ctpa';
  if(/owner.operator|owner_operator/.test(all))return 'owner';
  if(/independent.contractor|independent_contractor/.test(all))return 'independent';
@@ -159,7 +161,7 @@ function contextFor(p){
 function dom(tag,className,textContent){const e=document.createElement(tag);if(className)e.className=className;if(textContent!==undefined)e.textContent=String(textContent);return e}
 function paint(){
  const q=search.value.trim().toLowerCase();
- const subset=rows.filter(r=>[r.title,r.organization,r.plan,r.portal_type,new URL(r.launch_url).hostname].some(v=>String(v||'').toLowerCase().includes(q)));
+ const subset=rows.filter(r=>!r.setup_only&&[r.title,r.organization,r.plan,r.portal_type,new URL(r.launch_url).hostname].some(v=>String(v||'').toLowerCase().includes(q)));
  paintLegacy(); // builds a secure clickable card for every server-authorized row
  const renderedCards=Array.from(root.querySelectorAll(':scope > .portal-card'));
  const items=subset.map((p,i)=>({data:p,node:renderedCards[i],category:categoryFor(p)})).filter(x=>x.node);
@@ -172,11 +174,13 @@ function paint(){
  const grid=dom('section','wfa-workspace-grid');grid.setAttribute('aria-label','Choose your portal type');
  for(const def of CATEGORIES){
   const allowed=usable[def.id].length>0;
-  const pending=totals[def.id].length>0&&!allowed;
+  if(!allowed)continue;
+  const pending=false;
   const card=dom('article','wfa-workspace-type'+(selectedCategory===def.id?' is-selected':'')+(!allowed?' is-locked':''));
   const head=dom('div','wfa-workspace-head');
   const icon=dom('span','wfa-workspace-icon');icon.setAttribute('aria-hidden','true');
  const svgs={
+ lab:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6m-5 0v6l-6 9a3 3 0 0 0 2.5 5h11a3 3 0 0 0 2.5-5l-6-9V2"/><path d="M7 16h10M9 12h6"/></svg>',
  ctpa:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></svg>',
  employer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 6a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 5"/></svg>',
  owner:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 6h12v12H2zM14 10h4l4 4v4h-8z"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>',
@@ -246,8 +250,8 @@ function paint(){
  const other=items.filter(x=>x.category==='other'&&!x.data.setup_only);
  if(other.length){
   const box=dom('section','wfa-workspace-detail wfa-other-workspaces');
-  const disclosure=dom('details','wfa-other-disclosure');
-  const trigger=dom('summary','',other.length+' additional authorized service'+(other.length===1?'':'s'));
+  const disclosure=dom('div','wfa-other-disclosure');
+  const trigger=dom('h3','', 'Other authorized services');
   const list=dom('div','wfa-detail-options');
   for(const item of other){
    const p=item.data,action=item.node.querySelector('.enter');
@@ -264,5 +268,5 @@ function paint(){
  summary.textContent=summaryText;
  // Customer name is resolved once by showAccountName(), never from their email address.
 }
-let loading=false;async function load(force=false){if(loading)return;loading=true;const refreshButton=document.querySelector('#refresh');refreshButton.disabled=true;refreshButton.textContent='↻ Refreshing…';if(!cfg.selectorEndpoint){summary.textContent='Awaiting central subscription service';empty('Access directory not connected','Connect the central subscription authorization endpoint before going live.');return}const cacheKey='s4u_selector_v19_'+session.user.id;if(force){try{sessionStorage.removeItem(cacheKey)}catch{}}let hadCache=false;try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(false&&cached&&Date.now()-cached.time<300000&&Array.isArray(cached.portals)){rows=cached.portals;hadCache=true;summary.textContent=rows.length+' authorized subscriptions';paint();}}catch{}if(!hadCache){summary.textContent='Checking your assigned subscriptions…';empty('Loading workspaces','Verifying your account access.');}try{const {data:{session:latest}}=await sb.auth.getSession();if(!latest)throw Error('Session expired. Please sign in again.');const url=new URL(cfg.selectorEndpoint,location.origin);if(url.protocol!=='https:'&&url.hostname!=='localhost')throw Error('Secure endpoint required.');const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+latest.access_token,'apikey':cfg.supabasePublishableKey},body:JSON.stringify({action:'list_authorized_portals'})});const payload=await res.json();if(!res.ok)throw Error(payload.error||'Unable to verify portal access.');if(!Array.isArray(payload.portals))throw Error('Invalid authorization response.');rows=payload.portals.filter(p=>p&&typeof p==='object'&&typeof p.launch_url==='string'&&/^https:\/\//.test(p.launch_url)&&new URL(p.launch_url).hostname.endsWith('.screenings4u.com'));try{sessionStorage.setItem(cacheKey,JSON.stringify({time:Date.now(),portals:rows}))}catch{}summary.textContent=rows.length+' authorized subscription'+(rows.length===1?'':'s');message.textContent='';paint()}catch(err){rows=[];try{sessionStorage.removeItem(cacheKey)}catch{}summary.textContent='Unable to verify subscriptions';empty('Access temporarily unavailable','No portals will be displayed until authorization is verified.');message.textContent=err.message||'Please retry.';message.className='notice error'}finally{loading=false;refreshButton.disabled=false;refreshButton.textContent='↻ Refresh accounts'}}
+let loading=false;async function load(force=false){if(loading)return;loading=true;const refreshButton=document.querySelector('#refresh');refreshButton.disabled=true;refreshButton.textContent='↻ Refreshing…';if(!cfg.selectorEndpoint){summary.textContent='Awaiting central subscription service';empty('Access directory not connected','Connect the central subscription authorization endpoint before going live.');return}const cacheKey='s4u_selector_v19_'+session.user.id;if(force){try{sessionStorage.removeItem(cacheKey)}catch{}}let hadCache=false;try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(false&&cached&&Date.now()-cached.time<300000&&Array.isArray(cached.portals)){rows=cached.portals;hadCache=true;summary.textContent=rows.length+' authorized subscriptions';paint();}}catch{}if(!hadCache){summary.textContent='Checking your assigned subscriptions…';empty('Loading workspaces','Verifying your account access.');}try{const {data:{session:latest}}=await sb.auth.getSession();if(!latest)throw Error('Session expired. Please sign in again.');const url=new URL(cfg.selectorEndpoint,location.origin);if(url.protocol!=='https:'&&url.hostname!=='localhost')throw Error('Secure endpoint required.');const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+latest.access_token,'apikey':cfg.supabasePublishableKey},body:JSON.stringify({action:'list_authorized_portals'})});const payload=await res.json();if(!res.ok)throw Error(payload.error||'Unable to verify portal access.');if(!Array.isArray(payload.portals))throw Error('Invalid authorization response.');rows=payload.portals.filter(p=>p&&!p.setup_only&&typeof p==='object'&&typeof p.launch_url==='string'&&/^https:\/\//.test(p.launch_url)&&new URL(p.launch_url).hostname.endsWith('.screenings4u.com'));try{sessionStorage.setItem(cacheKey,JSON.stringify({time:Date.now(),portals:rows}))}catch{}summary.textContent=rows.length+' authorized subscription'+(rows.length===1?'':'s');message.textContent='';paint()}catch(err){rows=[];try{sessionStorage.removeItem(cacheKey)}catch{}summary.textContent='Unable to verify subscriptions';empty('Access temporarily unavailable','No portals will be displayed until authorization is verified.');message.textContent=err.message||'Please retry.';message.className='notice error'}finally{loading=false;refreshButton.disabled=false;refreshButton.textContent='↻ Refresh accounts'}}
 search.addEventListener('input',paint);document.querySelector('#refresh').addEventListener('click',()=>load(true));window.addEventListener('focus',()=>load(true));document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)});sb.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'){rows=[];root.replaceChildren();summary.textContent='Signed out';count.textContent='0 shown';try{sessionStorage.removeItem('s4u_selector_v18_'+session.user.id)}catch{}location.replace('/?reason=session')}});load();})();
