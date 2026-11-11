@@ -65,8 +65,7 @@ if(!p.setup_only){
  const dest=new URL(p.launch_url);
  const portal=dest.hostname==='independent-contractor.screenings4u.com'?'independent_contractor':destinations[dest.hostname];
  if(portal){
- a.addEventListener('click',async event=>{
- event.preventDefault();event.stopImmediatePropagation();
+ const launchAuthorizedPortal=async()=>{
  if(a.dataset.busy==='1')return;
  a.dataset.busy='1';a.textContent='Connecting securely…';message.textContent='';
  try{
@@ -100,7 +99,10 @@ if(!p.setup_only){
    throw Error('Portal destination does not match the authorized workspace.');
  location.assign(target.href);
  }catch(error){message.textContent=error.message||'Unable to open portal.';message.className='notice error';a.dataset.busy='0';a.textContent='Open portal →'}
- },true);
+ };
+ // Keep the same secure launch action for both workspace links and summary cards.
+ a.launchAuthorizedPortal=launchAuthorizedPortal;
+ a.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();void launchAuthorizedPortal()},true);
  }
 }
 // The C/TPA context switch only navigates among cards the backend already authorized.
@@ -219,7 +221,22 @@ function paint(){
   btn.addEventListener('click',()=>{
    if(!allowed)return;
    const choices=usable[def.id].filter(x=>def.id!=='ctpa'||contextFor(x.data)===selectedContext);
-   if(choices.length===1){choices[0].node.querySelector('.enter')?.click();return}
+   if(choices.length===1){
+    const action=choices[0].node?.querySelector('.enter');
+    if(action&&typeof action.launchAuthorizedPortal==='function'){
+     btn.disabled=true;
+     btn.textContent='Connecting securely…';
+     // All authorization and redirect checks remain in the existing handoff routine.
+     Promise.resolve(action.launchAuthorizedPortal()).finally(()=>{
+      if(document.contains(btn)){
+       btn.disabled=false;
+       btn.textContent=def.action+' →';
+       if(message.textContent){card.dataset.launchError='true';let error=card.querySelector('.wfa-card-launch-error');if(!error){error=dom('p','wfa-card-launch-error');error.setAttribute('role','alert');card.append(error)}error.textContent=message.textContent}
+      }
+     });
+    }else{message.textContent='Unable to connect this portal. Refresh your accounts and try again.';message.className='notice error'}
+    return;
+   }
    selectedCategory=def.id;paint();
    document.querySelector('#wfa-available-options')?.scrollIntoView({block:'nearest',behavior:'smooth'});
   });
