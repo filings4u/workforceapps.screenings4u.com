@@ -1,4 +1,5 @@
 (async()=>{'use strict';const cfg=window.S4U_ACCESS_CONFIG, root=document.querySelector('#cards'),summary=document.querySelector('#accountSummary'),count=document.querySelector('#count'),search=document.querySelector('#search'),message=document.querySelector('#selectorMessage');let rows=[];
+const authorizedLaunches=new WeakMap();
 const empty=(title,detail)=>{root.replaceChildren();const box=document.createElement('div');box.className='empty';const a=document.createElement('strong');a.textContent=title;box.append(a,document.createTextNode(detail));root.append(box)};
 if(!cfg?.supabaseUrl||!cfg?.supabasePublishableKey){empty('Configuration required','Central authentication has not been configured.');document.documentElement.classList.remove('s4u-session-pending');return}
 const sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{storageKey:cfg.authStorageKey,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
@@ -63,7 +64,7 @@ if(!p.setup_only){
  'ctpa-driver-non-dot.screenings4u.com':'ctpa_driver_workforce'
  };
  const dest=new URL(p.launch_url);
- const portal=dest.hostname==='independent-contractor.screenings4u.com'?'independent_contractor':destinations[dest.hostname];
+ const portal=dest.hostname==='independent-contractor.screenings4u.com'?'independent_contractor':destinations[dest.hostname]||(String(p.portal_code||'')==='lab_account'?'lab_account':null);
  if(portal){
  const launchAuthorizedPortal=async()=>{
  if(a.dataset.busy==='1')return;
@@ -102,6 +103,7 @@ if(!p.setup_only){
  };
  // Keep the same secure launch action for both workspace links and summary cards.
  a.launchAuthorizedPortal=launchAuthorizedPortal;
+ authorizedLaunches.set(p,launchAuthorizedPortal);
  a.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();void launchAuthorizedPortal()},true);
  }
 }
@@ -223,11 +225,12 @@ function paint(){
    const choices=usable[def.id].filter(x=>def.id!=='ctpa'||contextFor(x.data)===selectedContext);
    if(choices.length===1){
     const action=choices[0].node?.querySelector('.enter');
-    if(action&&typeof action.launchAuthorizedPortal==='function'){
+    const launch=authorizedLaunches.get(choices[0].data)||action?.launchAuthorizedPortal;
+    if(typeof launch==='function'){
      btn.disabled=true;
      btn.textContent='Connecting securely…';
      // All authorization and redirect checks remain in the existing handoff routine.
-     Promise.resolve(action.launchAuthorizedPortal()).finally(()=>{
+     Promise.resolve(launch()).finally(()=>{
       if(document.contains(btn)){
        btn.disabled=false;
        btn.textContent=def.action+' →';
