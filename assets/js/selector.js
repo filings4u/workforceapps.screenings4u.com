@@ -95,7 +95,7 @@ if(!p.setup_only){
  const target=new URL(result.redirect_url);
  // The legacy C/TPA subscription catalog may still reference ctpa-dot;
  // its verified handoff target is now the canonical ctpa.screenings4u.com.
- const canonicalHost=portal==='ctpa_dot'?'ctpa.screenings4u.com':dest.hostname;
+ const canonicalHost=(portal==='ctpa_dot'||portal==='ctpa_workforce')?'ctpa.screenings4u.com':dest.hostname;
  if(target.protocol!=='https:'||target.hostname!==canonicalHost||target.pathname!=='/auth-handoff.html')
    throw Error('Portal destination does not match the authorized workspace.');
  location.assign(target.href);
