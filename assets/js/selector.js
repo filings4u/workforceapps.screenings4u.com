@@ -150,6 +150,9 @@ function categoryFor(p){
  const type=String(p.portal_type||'').toLowerCase();
  const all=[host,title,type,String(p.portal_code||'')].join(' ');
  if(host==='lab-account.screenings4u.com'||String(p.portal_code||'')==='lab_account')return 'lab';
+ // Sponsored C/TPA employers and workers are downstream accounts, not C/TPA management.
+ if(/^ctpa-(?:employer|employee|driver)-(?:dot|non-dot)\.screenings4u\.com$/.test(host))return 'employer';
+ if(/^(?:faa|fmcsa|fra|fta|phmsa|uscg)-employer-dot\.screenings4u\.com$/.test(host))return 'employer';
  if(/ctpa|c\/tpa|consortium|third.party/.test(all))return 'ctpa';
  if(/owner.operator|owner_operator/.test(all))return 'owner';
  if(/independent.contractor|independent_contractor/.test(all))return 'independent';
