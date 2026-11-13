@@ -64,7 +64,7 @@ if(!p.setup_only){
  'ctpa-driver-non-dot.screenings4u.com':'ctpa_driver_workforce'
  };
  const dest=new URL(p.launch_url);
- const portal=dest.hostname==='independent-contractor.screenings4u.com'?'independent_contractor':destinations[dest.hostname]||(String(p.portal_code||'')==='lab_account'?'lab_account':null);
+ const portal=dest.hostname==='independent-contractor.screenings4u.com'?'independent_contractor':(dest.hostname==='ctpa.screenings4u.com'&&['ctpa_dot','ctpa_workforce'].includes(String(p.portal_code||''))?String(p.portal_code):destinations[dest.hostname]||(String(p.portal_code||'')==='lab_account'?'lab_account':null));
  if(portal){
  const launchAuthorizedPortal=async()=>{
  if(a.dataset.busy==='1')return;
