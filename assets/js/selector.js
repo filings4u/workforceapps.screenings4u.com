@@ -95,7 +95,7 @@ if(!p.setup_only){
  const target=new URL(result.redirect_url);
  // The legacy C/TPA subscription catalog may still reference ctpa-dot;
  // its verified handoff target is now the canonical ctpa.screenings4u.com.
- const canonicalHost=portal==='ctpa_dot'?'ctpa.screenings4u.com':dest.hostname;
+ const canonicalHost=['ctpa_dot','ctpa_workforce'].includes(portal)?'ctpa.screenings4u.com':dest.hostname;
  if(target.protocol!=='https:'||target.hostname!==canonicalHost||target.pathname!=='/auth-handoff.html')
    throw Error('Portal destination does not match the authorized workspace.');
  location.assign(target.href);
@@ -143,7 +143,7 @@ const CATEGORIES=[
  {id:'independent',label:'Independent Contractor',icon:'♙',desc:'Access contractor assignments and credentials.',action:'Open Contractor Portal'},
  {id:'agency',label:'DOT Agency',icon:'▥',desc:'Access FAA, FMCSA, FRA, FTA, PHMSA and USCG workspaces.',action:'Open DOT Agency Portal'}
 ];
-let selectedCategory='lab',selectedContext='dot';
+let selectedCategory='lab';
 function categoryFor(p){
  const host=new URL(p.launch_url).hostname.toLowerCase();
  const title=String(p.title||'').toLowerCase();
@@ -164,6 +164,18 @@ function contextFor(p){
 }
 function dom(tag,className,textContent){const e=document.createElement(tag);if(className)e.className=className;if(textContent!==undefined)e.textContent=String(textContent);return e}
 function paint(){
+ // Both C/TPA business surfaces now share one subscribed portal. Prefer a DOT
+ // entry for a given organization when available, otherwise keep NON-DOT.
+ const selectCombinedCtpa=items=>{
+  const picked=new Map();
+  for(const item of items){
+   if(item.category!=='ctpa')continue;
+   const key=String(item.data.organization_id||item.data.organization||item.data.ctpa_id||item.data.launch_url);
+   const earlier=picked.get(key);
+   if(!earlier||(contextFor(item.data)==='dot'&&contextFor(earlier.data)!=='dot'))picked.set(key,item);
+  }
+  return items.filter(item=>item.category!=='ctpa'||picked.get(String(item.data.organization_id||item.data.organization||item.data.ctpa_id||item.data.launch_url))===item);
+ };
  const q=search.value.trim().toLowerCase();
  const subset=rows.filter(r=>!r.setup_only&&[r.title,r.organization,r.plan,r.portal_type,new URL(r.launch_url).hostname].some(v=>String(v||'').toLowerCase().includes(q)));
  paintLegacy(); // builds a secure clickable card for every server-authorized row
@@ -171,7 +183,7 @@ function paint(){
  // Match the legacy authorized launch anchors by row identity, not filtered array index.
  const legacySubset=rows.filter(r=>[r.title,r.organization,r.plan,r.portal_type].some(v=>String(v||'').toLowerCase().includes(q)));
  const authorizedLinks=new Map(legacySubset.map((p,i)=>[p,renderedCards[i]]));
- const items=subset.map(p=>({data:p,node:authorizedLinks.get(p),category:categoryFor(p)})).filter(x=>x.node);
+ const items=selectCombinedCtpa(subset.map(p=>({data:p,node:authorizedLinks.get(p),category:categoryFor(p)})).filter(x=>x.node));
  const totals=Object.fromEntries(CATEGORIES.map(x=>[x.id,items.filter(v=>v.category===x.id)]));
  const usable=Object.fromEntries(CATEGORIES.map(x=>[x.id,totals[x.id].filter(v=>!v.data.setup_only)]));
  if(!usable[selectedCategory]?.length){
@@ -198,31 +210,15 @@ function paint(){
   const h=dom('h2','',def.label);
   const desc=dom('p','wfa-workspace-desc',def.desc);
   card.append(head,h,desc);
-  if(def.id==='ctpa'){
-   const ctx=dom('div','wfa-workspace-ctx');
-   if(!allowed)ctx.hidden=true;
-   ctx.append(dom('div','wfa-context-caption','Access context'));
-   const tabs=dom('div','wfa-workspace-tabs');
-   for(const [key,label] of [['dot','DOT'],['nondot','NON-DOT']]){
-    const has=usable.ctpa.some(x=>contextFor(x.data)===key);
-    const btn=dom('button',selectedContext===key?'active':'',label);
-    btn.type='button';btn.disabled=!has;btn.setAttribute('aria-pressed',String(selectedContext===key));
-    btn.addEventListener('click',()=>{selectedCategory='ctpa';selectedContext=key;paint()});
-    tabs.append(btn);
-   }
-   if(!usable.ctpa.some(x=>contextFor(x.data)===selectedContext)){
-    selectedContext=usable.ctpa.some(x=>contextFor(x.data)==='dot')?'dot':'nondot';
-    for(const btn of tabs.children){const isSelected=btn.textContent.toLowerCase().replace('-','')===selectedContext;btn.classList.toggle('active',isSelected);btn.setAttribute('aria-pressed',String(isSelected));}
-   }
-   ctx.append(tabs);card.append(ctx);
-  }else{card.append(dom('div','wfa-workspace-spacer',''));}
+  card.append(dom('div','wfa-workspace-spacer',''));
+
   const note=dom('div','wfa-workspace-note',allowed?usable[def.id].length+' assigned workspace'+(usable[def.id].length===1?'':'s'):pending?'Your administrator must finish your assignment.':'No assigned access for this account.');
   card.append(note);
   const btn=dom('button','wfa-workspace-open',allowed?def.action+' →':pending?'Awaiting assignment':'Locked');
   btn.type='button';btn.disabled=!allowed;btn.setAttribute('aria-expanded',String(selectedCategory===def.id&&allowed));
   btn.addEventListener('click',()=>{
    if(!allowed)return;
-   const choices=usable[def.id].filter(x=>def.id!=='ctpa'||contextFor(x.data)===selectedContext);
+   const choices=usable[def.id];
    if(choices.length===1){
     const action=choices[0].node?.querySelector('.enter');
     const launch=authorizedLaunches.get(choices[0].data)||action?.launchAuthorizedPortal;
@@ -248,7 +244,7 @@ function paint(){
  outer.append(grid);
  const detail=dom('section','wfa-workspace-detail');detail.id='wfa-available-options';
  const def=CATEGORIES.find(x=>x.id===selectedCategory);
- const eligible=(usable[selectedCategory]||[]).filter(x=>selectedCategory!=='ctpa'||contextFor(x.data)===selectedContext);
+ const eligible=usable[selectedCategory]||[];
  const pending=totals[selectedCategory].filter(x=>x.data.setup_only);
  const sectionHead=dom('div','wfa-detail-header');
  const info=dom('div','');
